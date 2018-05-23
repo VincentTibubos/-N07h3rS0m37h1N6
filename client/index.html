@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="theme-color" content="#2d74da">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512"  href="/icons/icon-512x512.png">
+    <style>
+        .roster img {
+            filter: grayscale(100%);
+        }
+        .roster .time_overlay+img { /* colorize if time_overlay is present */
+            filter: grayscale(0%);
+        }
+        .rounded-circle {
+            overflow: hidden;
+        }
+        .employee_timelog,
+        .employee_timelog img {
+            width: 150px;
+            height: auto;
+        }
+        .employee_timelog {
+            text-align: center;
+            position: relative;
+        }
+        .time_overlay {
+            position: absolute;
+            bottom: 0;
+            height: 50px;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-weight: bold;
+            z-index: 15;
+        }
+        .late { 
+            color: #f00;
+        }
+        .time {
+            background: rgba(0,128,0,0.7);
+        }
+        .break {
+            background: rgba(3,169,244,0.7);
+        }
+        .user-btn:hover {
+            cursor: pointer;
+        }
+        .user-btn>div:hover{            
+            box-shadow: 0px 0px 15px 0px blue;
+        }
+        .btn-responsive{
+            padding: 20em;
+        }
+        .form-group{
+            display: flex;
+		    justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    
+    <div ng-app="appEmployee" ng-controller="appEmployeeController"> 
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="nav navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" href="#">Features</a>
+                    <a class="nav-item nav-link" href="#">Pricing</a>
+                    <a class="nav-item nav-link" ng-if="isLoggedIn" ng-click="logout()" href="">logout</a>
+                    <a class="nav-item nav-link" ng-if="!isLoggedIn" data-target="#loginModal" data-toggle="modal" href="#">login</a>
+                </div>
+            </div>
+        </nav>
+            <input type="text" ng-model="loginPass" class="form-control">
+            <input type="button" value="encrypt" ng-click="tlEncrypt()" class="btn btn-sucess">
+            <input type="button" value="decrypt" ng-click="tlDecrypt()" class="btn btn-danger">
+            <div class="container">
+                <!-- <button class="btn btn-primary" ng-click="refresh($event)">Refresh</button> -->
+                <div class="d-flex roster justify-content-around flex-wrap">
+        <!--             <div class="p-2">
+                        <div class='employee_timelog rounded-circle'>
+                            <div class='time_overlay break'>08:34</div>
+                            <img src="img/emp/decipulo.png" class='img-fluid' />
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class='employee_timelog rounded-circle'>
+                            <div class='time_overlay late time'>9 something</div>
+                            <img src="img/emp/Montilla.jpg" class='img-fluid' />
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class='employee_timelog rounded-circle'>
+                            <img src="img/emp/pepito.jpg" class='img-fluid' />
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class='employee_timelog rounded-circle'>
+                            <img src="img/emp/velasco.png" class='img-fluid' />
+                        </div>
+                    </div> -->
+                    <div class="p-2 user-btn" data-toggle="modal" data-target="#myModal" ng-click="verify(employee.id)" ng-repeat="employee in employees">
+                        <div class='employee_timelog rounded-circle'>
+                            <div class='time_overlay time'>07:34</div>
+                            <img ng-src="img/emp/{{employee.avatar}}" class='img-fluid' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>time In: {{syncingBreakIn}}</div>
+            <ul>
+            <li ng-repeat="daily in dailyBreakIn">{{daily}}</li>
+            </ul>
+            <p>Time out: {{syncingBreakOut}}</p>
+            <table class="table table-condensed">
+                <thead>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>start</th>
+                    <th>end</th>
+                    <th>minutes</th>
+                </thead>
+                <tbody ng-repeat="comp in company_breaks">
+                    <td>{{comp.label}}</td>
+                    <td>{{comp.description}}</td>
+                    <td>{{comp.start}}</td>
+                    <td>{{comp.end}}</td>
+                    <td>{{comp.minutes}}</td>
+                </tbody>
+            </table>
+        <!-- Mo          
+            
+            dal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog" style="max-width:200px;">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">PIN</h4>
+                        <button type="button" class=" btn btn-danger" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">       
+                        <div class="form-group">
+                            <input type="password" ng-model="pin" class="form-control" maxlength="6" onkeypress="return event.charCode >= 48&&event.charCode <= 57"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="button" value="1" ng-click="pinAdd('1')" class="btn btn-primary btn-lg">
+                            <input type="button" value="2" ng-click="pinAdd('2')" class="btn btn-primary btn-lg">
+                            <input type="button" value="3" ng-click="pinAdd('3')" class="btn btn-primary btn-lg">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" value="4" ng-click="pinAdd('4')" class="btn btn-primary btn-lg">
+                            <input type="button" value="5" ng-click="pinAdd('5')" class="btn btn-primary btn-lg">
+                            <input type="button" value="6" ng-click="pinAdd('6')" class="btn btn-primary btn-lg">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" value="7" ng-click="pinAdd('7')" class="btn btn-primary btn-lg">
+                            <input type="button" value="8" ng-click="pinAdd('8')" class="btn btn-primary btn-lg">
+                            <input type="button" value="9" ng-click="pinAdd('9')" class="btn btn-primary btn-lg">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" value="0" ng-click="pinAdd('0')" class="btn btn-primary btn-lg">
+                            <input type="button" value="&larr;" ng-click="pinAdd('<')" class="btn btn-primary btn-lg" style="width: 105px;">
+                        </div>
+                        <div class="form-group row">
+                            <input type="button" ng-if="isTimeIn&&isBreakIn" value="Break Out" ng-click="break('')" class="form-control btn btn-danger">
+                            <input type="button" value="Time In" ng-click="timeIn()" ng-if="!isTimeIn" class="form-control btn btn-primary"/>
+                            <input ng-if="isTimeIn&&!isBreakIn&&checkTime(company_break.start,company_break.end)" ng-click="break(company_break.id)"  ng-repeat="company_break in company_breaks" type="button" value="{{company_break.label}}" class="col-md-12  btn btn-primary">
+                            <input type="button" ng-if="isTimeIn&&!isBreakIn" value="Time Out" class="btn btn-danger col-md-12" ng-click="timeOut()"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <!-- Modal -->
+        <!-- <div class="modal hide" id="loginModal" role="dialog">
+        <div class="modal-dialog" style="width: 30px;">
+        
+            <!-- Modal content
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Login</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form ng-submit="login($event)">
+                    {{loginPass}}==={{loginName}}
+                    <div class="form-group">
+                        <input type="text" ng-model="loginName" class="form-control" placeholder="Name"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" ng-model="loginPass" class="form-control"placeholder="Password"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Login" class="form-control btn btn-primary"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+            
+        </div>
+        </div> -->
+</div> 
+    <noscript>Loading...</noscript>
+   <script src="lib/jquery/dist/jquery.js" ></script>
+    <script src="lib/angular/angular.js" ></script>
+   <script src="lib/angular-resource/angular-resource.js" ></script>
+   <script src="lib/bootstrap/dist/js/bootstrap.js" ></script>
+   
+   <script src="js/idb.js"></script> 
+   <script src="js/utility.js"></script> 
+   <script src="js/lb-services.js"></script> 
+   <script src="js/app.js"></script>
+</body>
+</html>

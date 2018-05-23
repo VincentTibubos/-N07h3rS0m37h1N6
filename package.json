@@ -1,0 +1,41 @@
+{
+  "name": "nglb-pwa",
+  "version": "1.0.0",
+  "main": "server/server.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "start": "node .",
+    "posttest": "npm run lint && nsp check",
+    "generate-key": "openssl genrsa -out server/private/localhost.key.pem 2048",
+    "generate-cert": "openssl req -config server/localhost.conf -new -x509 -sha256 -nodes -key server/private/localhost.key.pem -days 365 -out server/private/localhost.cert.pem",
+    "generate-csr": "openssl req -config server/localhost.conf -new -sha256 -nodes -key server/private/localhost.key.pem -days 365 -out server/private/localhost.req.pem",
+    "print-cert": "openssl x509 -in server/private/localhost.cert.pem -text -noout",
+    "print-csr": "openssl req -in server/private/localhost.req.pem -text -noout"
+  },
+  "dependencies": {
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "helmet": "^3.10.0",
+    "loopback": "^3.19.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^6.0.0",
+    "loopback-connector-mongodb": "^3.4.3",
+    "serve-favicon": "^2.0.1",
+    "spdy": "^3.4.7",
+    "strong-error-handler": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "nsp": "^2.1.0"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "nglb-pwa"
+}

@@ -1,0 +1,80 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=Vincent Corp, ST=Manila, C=PH/emailAddress=vincentjoramtibubos@gmail.com, O=Vincent Corp, OU=Personal Department
+        Validity
+            Not Before: May 15 08:40:15 2018 GMT
+            Not After : May 14 08:40:15 2023 GMT
+        Subject: CN=Vincent Corp, ST=Manila, C=PH/emailAddress=vincentjoramtibubos@gmail.com, O=Vincent Corp, OU=Personal Department
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c3:8d:7a:53:5f:e6:2a:f2:31:f3:1d:d0:af:a0:
+                    62:bc:8d:1f:eb:6c:bb:17:af:a7:25:76:16:bb:cb:
+                    f7:19:59:51:15:3b:d5:b6:c9:64:f9:4b:08:b0:0e:
+                    02:18:85:dd:49:dc:e0:12:dc:7b:43:c2:d1:68:e6:
+                    19:54:b0:31:78:96:65:83:b8:5e:b1:61:d3:51:b0:
+                    e8:2d:aa:d2:b0:73:37:0d:f7:53:ca:14:3a:33:c9:
+                    1f:94:03:dd:73:34:a3:28:b2:b2:50:a9:67:d8:04:
+                    4a:f4:02:45:c8:f1:b3:bd:f5:b5:61:90:34:22:2f:
+                    cd:8a:fd:06:a2:dd:03:3c:45:c0:62:7c:4c:c3:a9:
+                    d5:b4:c7:a1:63:33:8f:cb:90:eb:89:38:eb:00:f7:
+                    ca:5f:7f:b7:15:3c:75:82:77:b0:50:31:c5:4d:5e:
+                    b5:42:fa:9d:bd:f9:b1:b7:e1:ac:38:e8:e7:ef:bb:
+                    c7:6c:22:00:d4:8c:91:90:b6:5e:bd:88:9a:18:3c:
+                    2e:14:33:ea:65:e4:3d:5e:3c:1d:45:1e:43:a5:86:
+                    80:25:24:16:8a:8d:f2:64:76:67:0c:59:b4:b1:82:
+                    a1:2e:fb:e0:29:bc:20:93:56:f0:a1:da:51:a6:0a:
+                    a3:3d:79:21:9f:27:47:46:38:a1:20:76:39:86:d4:
+                    13:0d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Key Usage: 
+                Digital Signature, Non Repudiation, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:localhost, DNS:DESKTOP-KCHETVV.local
+    Signature Algorithm: sha256WithRSAEncryption
+         3b:dc:46:d4:e9:09:76:ab:1a:47:18:1d:e1:eb:14:d9:0f:8e:
+         d4:96:4e:8b:55:ae:26:2b:11:08:84:bd:a8:d7:c3:3b:81:30:
+         51:12:e7:ea:1d:f5:08:d6:5f:aa:88:9d:6b:1f:83:b6:97:29:
+         4b:cc:39:69:e1:bd:42:12:28:94:12:ac:e6:22:54:53:73:95:
+         85:4d:85:ce:09:60:66:0f:b8:4d:89:f9:aa:8a:76:cc:79:84:
+         58:47:4d:12:0f:83:e1:3d:75:b4:85:ab:e9:6f:90:9d:b2:d0:
+         63:5d:5c:05:b2:52:60:64:2c:e8:1d:7a:73:82:2c:b1:ab:a1:
+         9b:51:e8:bb:70:77:c5:de:3c:17:16:10:51:51:9f:ed:3b:fa:
+         cb:a8:56:0a:ff:c8:97:76:4a:73:f4:1b:ec:ac:62:82:17:84:
+         d1:d6:87:5f:a8:e3:71:c9:dd:20:ad:bb:ab:37:91:e2:51:20:
+         d4:5c:7d:46:b7:70:a0:c0:66:08:d1:51:f0:d1:12:31:1d:70:
+         a5:1f:82:e5:38:a3:9e:b3:bd:80:68:c9:39:bf:ee:e7:e1:fe:
+         53:8e:0b:9c:0a:fe:ef:60:45:5e:a9:88:3d:72:bc:3f:93:39:
+         43:cc:fd:1a:f5:ce:e9:26:b4:d4:52:6f:1d:0d:16:86:1b:b5:
+         dd:aa:a6:1c
+-----BEGIN CERTIFICATE-----
+MIID9DCCAtygAwIBAgIBATANBgkqhkiG9w0BAQsFADCBmDEVMBMGA1UEAwwMVmlu
+Y2VudCBDb3JwMQ8wDQYDVQQIDAZNYW5pbGExCzAJBgNVBAYTAlBIMSwwKgYJKoZI
+hvcNAQkBFh12aW5jZW50am9yYW10aWJ1Ym9zQGdtYWlsLmNvbTEVMBMGA1UECgwM
+VmluY2VudCBDb3JwMRwwGgYDVQQLDBNQZXJzb25hbCBEZXBhcnRtZW50MB4XDTE4
+MDUxNTA4NDAxNVoXDTIzMDUxNDA4NDAxNVowgZgxFTATBgNVBAMMDFZpbmNlbnQg
+Q29ycDEPMA0GA1UECAwGTWFuaWxhMQswCQYDVQQGEwJQSDEsMCoGCSqGSIb3DQEJ
+ARYddmluY2VudGpvcmFtdGlidWJvc0BnbWFpbC5jb20xFTATBgNVBAoMDFZpbmNl
+bnQgQ29ycDEcMBoGA1UECwwTUGVyc29uYWwgRGVwYXJ0bWVudDCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAMONelNf5iryMfMd0K+gYryNH+tsuxevpyV2
+FrvL9xlZURU71bbJZPlLCLAOAhiF3Unc4BLce0PC0WjmGVSwMXiWZYO4XrFh01Gw
+6C2q0rBzNw33U8oUOjPJH5QD3XM0oyiyslCpZ9gESvQCRcjxs731tWGQNCIvzYr9
+BqLdAzxFwGJ8TMOp1bTHoWMzj8uQ64k46wD3yl9/txU8dYJ3sFAxxU1etUL6nb35
+sbfhrDjo5++7x2wiANSMkZC2Xr2Imhg8LhQz6mXkPV48HUUeQ6WGgCUkFoqN8mR2
+ZwxZtLGCoS774Cm8IJNW8KHaUaYKoz15IZ8nR0Y4oSB2OYbUEw0CAwEAAaNHMEUw
+CQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwKwYDVR0RBCQwIoIJbG9jYWxob3N0ghVE
+RVNLVE9QLUtDSEVUVlYubG9jYWwwDQYJKoZIhvcNAQELBQADggEBADvcRtTpCXar
+GkcYHeHrFNkPjtSWTotVriYrEQiEvajXwzuBMFES5+od9QjWX6qInWsfg7aXKUvM
+OWnhvUISKJQSrOYiVFNzlYVNhc4JYGYPuE2J+aqKdsx5hFhHTRIPg+E9dbSFq+lv
+kJ2y0GNdXAWyUmBkLOgdenOCLLGroZtR6Ltwd8XePBcWEFFRn+07+suoVgr/yJd2
+SnP0G+ysYoIXhNHWh1+o43HJ3SCtu6s3keJRINRcfUa3cKDAZgjRUfDREjEdcKUf
+guU4o56zvYBoyTm/7ufh/lOOC5wK/u9gRV6piD1yvD+TOUPM/Rr1zukmtNRSbx0N
+FoYbtd2qphw=
+-----END CERTIFICATE-----

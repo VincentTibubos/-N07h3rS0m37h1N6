@@ -1,0 +1,35 @@
+{
+  "name": "break_log",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "required": true
+    },
+    "date_log": {
+      "type": "string",
+      "required": true
+    },
+    "in": {
+      "type": "string"
+    },
+    "out": {
+      "type": "string"
+    },
+    "log_type": {
+      "type": "string"
+    },
+    "company_break_id": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,28 @@
+{
+  "name": "time_log",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "required": true
+    },
+    "date_log": {
+      "type": "string",
+      "required": true
+    },
+    "in": {
+      "type": "string"
+    },
+    "out": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
