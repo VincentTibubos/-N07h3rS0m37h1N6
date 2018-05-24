@@ -83,10 +83,10 @@
                     <a class="nav-item nav-link" ng-if="!isLoggedIn" data-target="#loginModal" data-toggle="modal" href="#">login</a>
                 </div>
             </div>
-        </nav>
+        </nav><!-- 
             <input type="text" ng-model="loginPass" class="form-control">
             <input type="button" value="encrypt" ng-click="tlEncrypt()" class="btn btn-sucess">
-            <input type="button" value="decrypt" ng-click="tlDecrypt()" class="btn btn-danger">
+            <input type="button" value="decrypt" ng-click="tlDecrypt()" class="btn btn-danger"> -->
             <div class="container">
                 <!-- <button class="btn btn-primary" ng-click="refresh($event)">Refresh</button> -->
                 <div class="d-flex roster justify-content-around flex-wrap">
@@ -114,18 +114,18 @@
                     </div> -->
                     <div class="p-2 user-btn" data-toggle="modal" data-target="#myModal" ng-click="verify(employee.id)" ng-repeat="employee in employees">
                         <div class='employee_timelog rounded-circle'>
-                            <div class='time_overlay time'>07:34</div>
+                            <div class='time_overlay' ng-if="employee.isTimeIn" ng-class="{time:employee.isTimeIn&&!employee.isBreakIn,break:employee.isBreakIn}">{{employee.time}}</div>
                             <img ng-src="img/emp/{{employee.avatar}}" class='img-fluid' />
                         </div>
                     </div>
                 </div>
             </div>
-            
+            <!-- 
             <div>time In: {{syncingBreakIn}}</div>
             <ul>
             <li ng-repeat="daily in dailyBreakIn">{{daily}}</li>
             </ul>
-            <p>Time out: {{syncingBreakOut}}</p>
+            <p>Time out: {{syncingBreakOut}}</p> -->
             <table class="table table-condensed">
                 <thead>
                     <th>Name</th>
@@ -178,7 +178,7 @@
                         </div>
                         <div class="form-group row">
                             <input type="button" ng-if="isTimeIn&&isBreakIn" value="Break Out" ng-click="break('')" class="form-control btn btn-danger">
-                            <input type="button" value="Time In" ng-click="timeIn()" ng-if="!isTimeIn" class="form-control btn btn-primary"/>
+                            <input type="button" value="Time In" ng-click="timeIn()" ng-if="!isTimeIn" class="form-control btn btn-success"/>
                             <input ng-if="isTimeIn&&!isBreakIn&&checkTime(company_break.start,company_break.end)" ng-click="break(company_break.id)"  ng-repeat="company_break in company_breaks" type="button" value="{{company_break.label}}" class="col-md-12  btn btn-primary">
                             <input type="button" ng-if="isTimeIn&&!isBreakIn" value="Time Out" class="btn btn-danger col-md-12" ng-click="timeOut()"/>
                         </div> 

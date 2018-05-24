@@ -97,10 +97,10 @@ self.addEventListener('fetch', function(e) {
               var indexDate=new Date(data[key].date_log);
               if(/* !('out' in data[key])&& */limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime())){
                 writeData('time_log', data[key]);
-                console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
+                //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
               }
               else{
-                console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                //console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
               }
             }
           })
@@ -129,10 +129,10 @@ self.addEventListener('fetch', function(e) {
               var indexDate=new Date(data[key].date_log);
               if(/* !('out' in data[key])&& */limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime())){
                 writeData('break_log', data[key]);
-                console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
+                //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
               }
               else{
-                console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                //console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
               }
             }
           })
@@ -161,10 +161,10 @@ self.addEventListener('fetch', function(e) {
               var indexDate=new Date(data[key].date_log);
               if(/* !('out' in data[key])&& */limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime())){
                 writeData('company_break', data[key]);
-                console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
+                //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
               }
               else{
-                console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                //console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
               }
             }
           })

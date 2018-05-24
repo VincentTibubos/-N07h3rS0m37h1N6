@@ -11,8 +11,9 @@ function subtractDateToGetTime(a,b){
 }
 var temp,pin='',dateLimit=45;
 var newApp = angular.module('appEmployee', ['lbServices']); //myMsgs=ng-app our app now use service lbServices as its dependencies
-newApp.controller("appEmployeeController", function($scope,$interval,Msg){
+newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Msg){
     $scope.isTimeIn=false;
+    $scope.TimeHour='';
     $scope.isBreakIn=false;
     $scope.syncingTimeIn=[];
     $scope.syncingTimeOut=[];
@@ -39,36 +40,26 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
         alert('loggedout');
     }
     $scope.userId='';
+    $scope.refreshEmp=function(){
+        for(emp of $scope.employees){
+            if(emp.id==$scope.userId){
+                emp.isTimeIn=$scope.isTimeIn;
+                emp.isBreakIn=$scope.isBreakIn;
+                emp.time=$scope.TimeHour;
+                break;
+            }
+        }
+    }
     $scope.verify=function(str){
         $scope.userId=str;
         var newDate=new Date();
         $scope.isTimeIn=false;
+        $scope.TimeHour='';
         $scope.isBreakIn=false;
-        for(var i=0;i<$scope.syncingBreakIn.length;i++){
-            if(!('out' in $scope.syncingBreakIn[i])&&$scope.syncingBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()==$scope.syncingBreakIn[i].date){
-                $scope.isBreakIn=true;
-                break;
-            }
-        }
-        for(var i=0;i<$scope.dailyBreakIn.length;i++){
-            if(!('out' in $scope.dailyBreakIn[i])&&$scope.dailyBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()===$scope.dailyBreakIn[i].date_log)    {
-                var checker=true;
-                for(var j=0;j<$scope.syncingBreakOut.length;j++){
-                    if($scope.syncingBreakOut[j].id==$scope.dailyBreakIn[i].id){
-                       checker=false;
-                        break; 
-                    }
-                }
-                if(checker){
-                    $scope.isBreakIn=true;
-                    break;
-                }
-                    
-            }
-        }
         for(var i=0;i<$scope.syncingTimeIn.length;i++){
             if(!('out' in $scope.syncingTimeIn[i])&&$scope.syncingTimeIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()==$scope.syncingTimeIn[i].date){
                 $scope.isTimeIn=true;
+                $scope.TimeHour=$scope.syncingTimeIn[i].in;
                 break;
             }
         }
@@ -82,12 +73,39 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                     }
                 }
                 if(checker){
+                    $scope.TimeHour=$scope.dailyTimeIn[i].in;
                     $scope.isTimeIn=true;
                     break;
                 }
                     
             }
         }
+        for(var i=0;i<$scope.syncingBreakIn.length;i++){
+            if(!('out' in $scope.syncingBreakIn[i])&&$scope.syncingBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()==$scope.syncingBreakIn[i].date){
+                $scope.isBreakIn=true;
+                $scope.TimeHour=$scope.syncingBreakIn[i].in;
+                break;
+            }
+        }
+        for(var i=0;i<$scope.dailyBreakIn.length;i++){
+            if(!('out' in $scope.dailyBreakIn[i])&&$scope.dailyBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()===$scope.dailyBreakIn[i].date_log)    {
+                var checker=true;
+                for(var j=0;j<$scope.syncingBreakOut.length;j++){
+                    if($scope.syncingBreakOut[j].id==$scope.dailyBreakIn[i].id){
+                       checker=false;
+                        break; 
+                    }
+                }
+                if(checker){
+                    $scope.TimeHour=$scope.dailyBreakIn[i].in;
+                    $scope.isBreakIn=true;
+                    break;
+                }
+                    
+            }
+        }
+        $scope.refreshEmp();
+        console.log('refresh',$scope.dailyTimeIn,$scope.dailyBreakIn);
     }
     $scope.pin='';
     $scope.pinAdd=function(ch){
@@ -108,7 +126,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
     };
     $scope.break=function(break_id){
         if($scope.pin===pin){
-            if($scope.isBreakIn&&break_id==''){
+            if($scope.isBreakIn){
                 if ('serviceWorker' in navigator && 'SyncManager' in window) {
                     navigator.serviceWorker.ready
                     .then(function(sw) {                                     
@@ -130,6 +148,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                                     console.log('update');
                                     $scope.syncingBreakIn.push(outPost);
                                     $scope.isBreakIn=false;
+                                    $scope.verify($scope.userId);
                                     //$scope.getData()  ;
                                     //$scope.$apply();
                                     return sw.sync.register('sync-new-breakIn');
@@ -163,8 +182,9 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                                     $scope.dailyBreakIn.push(postBreak);
                                     $scope.isBreakIn=false;
                                     $scope.syncingBreakOut.push(postBreak);
+                                    $scope.verify($scope.userId);
                                     //$scope.getData();
-                                    $scope.$apply();
+                                    //$scope.$apply();
                                     return sw.sync.register('sync-new-breakOut');
                                 })
                                 .catch(function(err) {
@@ -174,7 +194,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                     })
                 }
             }
-            else if(break_id!=''){
+            else{
                 if ('serviceWorker' in navigator && 'SyncManager' in window) {
                     navigator.serviceWorker.ready
                     .then(function(sw) {                                     
@@ -188,7 +208,9 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                         }                                    
                         writeData('sync-breakIn', postBreak)
                             .then(function() {
-                                $scope.isBreakIn =true;
+                                $scope.isBreakIn =true; 
+                            $scope.TimeHour=postBreak.in;
+                            $scope.refreshEmp();
                                 //$scope.getData();
                                 $scope.$apply();
                                 return sw.sync.register('sync-new-breakIn');
@@ -224,6 +246,8 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                         .then(function() {
                             $scope.syncingTimeIn.push(postTime);
                             $scope.isTimeIn=true;
+                            $scope.TimeHour=postTime.in;
+                            $scope.refreshEmp();
                             //$scope.getData();
                             console.log('write');
                             $scope.$apply();
@@ -262,6 +286,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                                 console.log('update');
                                 $scope.syncingTimeIn.push(outPost);
                                 $scope.isTimeIn=false;
+                                $scope.refreshEmp();
                                 //$scope.getData()  ;
                                 //$scope.$apply();
                                 return sw.sync.register('sync-new-timeIn');
@@ -293,6 +318,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                             .then(function() {
                                 $scope.dailyTimeIn.push(postTime);
                                 $scope.isTimeIn=false;
+                                $scope.refreshEmp();
                                 $scope.syncingTimeOut.push(postTime);
                                 //$scope.getData();
                                 $scope.$apply();
@@ -321,13 +347,18 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
             })
             .then(function(data) {
                 networkDataReceived = true;
-                    $scope.employees = data;
-                    console.log('olmessage:' + $scope.employees);
-                    $scope.$apply();
+                $scope.employees = data;
+                console.log('start');
+                for(var j=0;j<$scope.employees.length;j++){
+                        $scope.verify($scope.employees[j].id);
+                        console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
+                }
+                console.log('olmessage:' + $scope.employees);
+                //$scope.$apply();
             })
             .catch(function(err){
                 console.log(err);
-            }); 
+            });
         fetch(url3)
             .then(function(res) {
                 return res.json();
@@ -381,7 +412,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                             //if(data.toString()!=$scope.employees.toString()){
                             if(data.length>0){
                                 $scope.employees = data;
-                                console.log('offmessage:' + $scope.employees);
+                                console.log('offmessage: ' + $scope.employees);
                                 $scope.$apply(); //this triggers a $digest
                             // }
                             }
@@ -414,7 +445,6 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                             $scope.$apply();
                         }
                     });
-                    
                 readAllData('time_log')
                 .then(function(data){
                     if(data.length>0){
@@ -476,11 +506,11 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                     var wdate=(newDate.getMonth()+'-'+newDate.getDate()+'-'+newDate.getFullYear());
                     var indexDate=new Date(data[key].date_log);
                     if(/* !('out' in data[key]) &&*/limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime())){
-                      console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
+                      //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
                     }
                     else{
                         data.remove(key);
-                      console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                      //console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
                     }
                   }
                 $scope.dailyTimeIn=data;
@@ -502,11 +532,11 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                         var wdate=(newDate.getMonth()+'-'+newDate.getDate()+'-'+newDate.getFullYear());
                         var indexDate=new Date(data[key].date_log);
                         if(/* !('out' in data[key]) &&*//* limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime()) */true){
-                          console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
+                          //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
                         }
                         else{
                             data.remove(key);
-                          console.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                          //sconsole.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
                         }
                     }
                     $scope.dailyBreakIn=data;
@@ -516,11 +546,24 @@ newApp.controller("appEmployeeController", function($scope,$interval,Msg){
                 .catch(function(err){
                     //console.log(err);
                 }); 
+        /* fetch('https://localhost:8443/api/employees')
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                networkDataReceived = true;
+                for(var i=0;i<data.length;i++){
+                    $scope.verify(data[i]);
+                    data[i].isTimeIn=$scope.isTimeIn;
+                }
+                $scope.employees = data;
+                    console.log('olmessage:' + $scope.employees);
+                    $scope.$apply();
+            })
+            .catch(function(err){
+                console.log(err);
+            }); */
     },200);
-    $scope.refresh=function(e){
-        e.preventDefault();
-        $scope.getData();
-    }
     //$scope.sample=$scope.getData();
     //$interval(function(){$scope.$apply();},3000);//gets new data from the server every 3 seconds
 
