@@ -341,24 +341,6 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
         var url3 = 'https://localhost:8443/api/company_breaks';
         var networkDataReceived = false;
         var networkDataReceived2 = false;
-        fetch(url)
-            .then(function(res) {
-                return res.json();
-            })
-            .then(function(data) {
-                networkDataReceived = true;
-                $scope.employees = data;
-                console.log('start');
-                for(var j=0;j<$scope.employees.length;j++){
-                        $scope.verify($scope.employees[j].id);
-                        console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
-                }
-                console.log('olmessage:' + $scope.employees);
-                //$scope.$apply();
-            })
-            .catch(function(err){
-                console.log(err);
-            });
         fetch(url3)
             .then(function(res) {
                 return res.json();
@@ -403,56 +385,103 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
             })
             .catch(function(err){
                 console.log(err);
-            }); 
-            
-            if ('indexedDB' in window) {
-                if (!networkDataReceived) {            
-                    readAllData('employees')
-                        .then(function(data) {
-                            //if(data.toString()!=$scope.employees.toString()){
-                            if(data.length>0){
-                                $scope.employees = data;
-                                console.log('offmessage: ' + $scope.employees);
-                                $scope.$apply(); //this triggers a $digest
-                            // }
-                            }
-                        });
-                }
-                if (!networkDataReceived2) {     
-                    readAllData('time_log')
-                        .then(function(data) {
-                            //if(data.toString()!=$scope.employees.toString())
-                                console.log('omessage:' + $scope.dailyTimeIn);
-                            if(data.length>0){
-                                $scope.dailyTimeIn = data;
-                                console.log('omessage:' + $scope.dailyTimeIn);
-                                $scope.$apply(); //this triggers a $digest
-                            // }
-                            }
-                        });
+            });
+        fetch("https://localhost:8443/api/break_logs")
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                for (var key in data) {
+                    var newDate=new Date();
+                    var limitDate=new Date();
+                    limitDate.setHours(limitDate.getHours()-(24*dateLimit));
+                    var wdate=(newDate.getMonth()+'-'+newDate.getDate()+'-'+newDate.getFullYear());
+                    var indexDate=new Date(data[key].date_log);
+                    if(/* !('out' in data[key]) &&*//* limitDate.getTime()<=indexDate.getTime()&&(newDate.getTime()>=indexDate.getTime()) */true){
+                      //console.log(wdate,' sdfsadfsaf  ',data[key].date_log);
                     }
-                        readAllData('loggedInAccount')
-                    .then(function(data){
-                        if(data.length>0){
-                            $scope.isLoggedIn=true;
-                            $scope.$apply();
-                        }
-                    });
-                readAllData('sync-timeIn')
-                    .then(function(data){
-                        if(data.length>0){
-                            $scope.syncingTimeIn=data;
-                            $scope.$apply();
-                        }
-                    });
+                    else{
+                        data.remove(key);
+                      //sconsole.log(limitDate.getTime(),newDate.getTime(),indexDate.getTime(),dateLimit);
+                    }
+                }
+                $scope.dailyBreakIn=data;
+                $scope.$apply();
+                return;
+            })
+            .catch(function(err){
+                //console.log(err);
+            });  
+        fetch(url)
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                networkDataReceived = true;
+                $scope.employees = data;
+                console.log('start');
+                for(var j=0;j<$scope.employees.length;j++){
+                        $scope.verify($scope.employees[j].id);
+                        console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
+                        $scope.$apply();
+                }
+                console.log('olmessage:' + $scope.employees);
+                //$scope.$apply();
+            })
+            .catch(function(err){
+                console.log(err);
+            });        
+        if ('indexedDB' in window) {
+            if (!networkDataReceived2) {     
                 readAllData('time_log')
+                    .then(function(data) {
+                        //if(data.toString()!=$scope.employees.toString())
+                            console.log('omessage:' + $scope.dailyTimeIn);
+                        if(data.length>0){
+                            $scope.dailyTimeIn = data;
+                            console.log('omessage:' + $scope.dailyTimeIn);
+                            $scope.$apply(); //this triggers a $digest
+                        // }
+                        }
+                    });
+                }
+            readAllData('loggedInAccount')
                 .then(function(data){
                     if(data.length>0){
-                        $scope.dailyTimeIn=data;
+                        $scope.isLoggedIn=true;
                         $scope.$apply();
                     }
                 });
+            readAllData('sync-timeIn')
+                .then(function(data){
+                    if(data.length>0){
+                        $scope.syncingTimeIn=data;
+                        $scope.$apply();
+                    }
+                });
+            readAllData('time_log')
+            .then(function(data){
+                if(data.length>0){
+                    $scope.dailyTimeIn=data;
+                    $scope.$apply();
+                }
+            });
+            if (!networkDataReceived) {            
+                readAllData('employees')
+                    .then(function(data) {
+                        //if(data.toString()!=$scope.employees.toString()){
+                        if(data.length>0){
+                            $scope.employees = data; 
+                            for(var j=0;j<$scope.employees.length;j++){
+                                $scope.verify($scope.employees[j].id);
+                                console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
+                                $scope.$apply();
+                            }
+                        // }
+                        }
+                    });
             }
+        }
 
         /*
         readAllData('sync-posts')
@@ -566,37 +595,10 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
     },200);
     //$scope.sample=$scope.getData();
     //$interval(function(){$scope.$apply();},3000);//gets new data from the server every 3 seconds
-
-   $scope.newMsg='';//the model we will use to input new message
-   
+ 
    $scope.loginName='';
    $scope.loginPass='';
-   $scope.syncing_msgs=[];  
-   $scope.sendMsg=function(e){//function that adds a new message to the loopback database
-    e.preventDefault(); 
-       if($scope.newMsg!=""){
-            if ('serviceWorker' in navigator && 'SyncManager' in window) {
-                navigator.serviceWorker.ready
-                .then(function(sw) {                                     
-                    var post = {
-                        date_created: new Date().toString(),
-                        id: new Date().toString(),
-                        content: $scope.newMsg
-                    };           
-                    writeData('sync-posts', post)
-                        .then(function() {
-                            $scope.newMsg="";
-                            $scope.syncing_msgs.push(post);
-                            $scope.$apply();
-                            return sw.sync.register('sync-new-posts');
-                        })
-                        .catch(function(err) {
-                            console.log(err);
-                        });
-                })
-            }
-       }
-   }
+  
    
     $scope.tlDecrypt =function(){
         $scope.loginPass=tlDecrypt($scope.loginPass);

@@ -115,7 +115,7 @@
                     <div class="p-2 user-btn" data-toggle="modal" data-target="#myModal" ng-click="verify(employee.id)" ng-repeat="employee in employees">
                         <div class='employee_timelog rounded-circle'>
                             <div class='time_overlay' ng-if="employee.isTimeIn" ng-class="{time:employee.isTimeIn&&!employee.isBreakIn,break:employee.isBreakIn}">{{employee.time}}</div>
-                            <img ng-src="img/emp/{{employee.avatar}}" class='img-fluid' />
+                            <img ng-src="img/emp/{{employee.avatar}}" class='img-fluid' alt="{{employee.avatar}}" />
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
             <li ng-repeat="daily in dailyBreakIn">{{daily}}</li>
             </ul>
             <p>Time out: {{syncingBreakOut}}</p> -->
-            <table class="table table-condensed">
+           <!--  <table class="table table-condensed">
                 <thead>
                     <th>Name</th>
                     <th>Description</th>
@@ -141,7 +141,7 @@
                     <td>{{comp.end}}</td>
                     <td>{{comp.minutes}}</td>
                 </tbody>
-            </table>
+            </table> -->
         <!-- Mo          
             
             dal -->
@@ -190,7 +190,7 @@
         <!-- <div class="modal hide" id="loginModal" role="dialog">
         <div class="modal-dialog" style="width: 30px;">
         
-            <!-- Modal content
+             Modal content
             <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Login</h4>
@@ -217,7 +217,7 @@
             
         </div>
         </div> -->
-</div> 
+    </div>
     <noscript>Loading...</noscript>
    <script src="lib/jquery/dist/jquery.js" ></script>
     <script src="lib/angular/angular.js" ></script>

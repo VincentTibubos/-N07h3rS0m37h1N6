@@ -54,5 +54,17 @@
   "break_log": {
     "dataSource": "db",
     "public": true
+  },
+  "employee_schedule": {
+    "dataSource": "db",
+    "public": true
+  },
+  "company_shift": {
+    "dataSource": "db",
+    "public": true
+  },
+  "company": {
+    "dataSource": "db",
+    "public": true
   }
 }

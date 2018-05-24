@@ -1,0 +1,25 @@
+{
+  "name": "employee_schedule",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "required": true
+    },
+    "company_shift_id": {
+      "type": "string",
+      "required": true
+    },
+    "date": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
