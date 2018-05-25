@@ -6,12 +6,8 @@
     "validateUpsert": true
   },
   "properties": {
-    "employee_id": {
-      "type": "number",
-      "required": true
-    },
     "company_id": {
-      "type": "number",
+      "type": "string",
       "required": true
     },
     "last_name": {
@@ -27,7 +23,7 @@
       "required": true
     },
     "company_position_id": {
-      "type": "number",
+      "type": "string",
       "required": true
     },
     "sex": {

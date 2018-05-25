@@ -57,14 +57,40 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
         $scope.TimeHour='';
         $scope.isBreakIn=false;
         for(var i=0;i<$scope.syncingTimeIn.length;i++){
-            if(!('out' in $scope.syncingTimeIn[i])&&$scope.syncingTimeIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()==$scope.syncingTimeIn[i].date){
-                $scope.isTimeIn=true;
-                $scope.TimeHour=$scope.syncingTimeIn[i].in;
-                break;
+            if(!('out' in $scope.syncingTimeIn[i])&&$scope.syncingTimeIn[i].employee_id===$scope.userId){
+                console.log((newDate.getTime()-new Date($scope.dailyTimeIn[i].date_log+' '+$scope.dailyTimeIn[i].in).getTime())/(1000*60*60),'>=20');
+                    if(((newDate.getTime()-new Date($scope.dailyTimeIn[i].date_log+' '+$scope.dailyTimeIn[i].in).getTime())/(1000*60*60))>=20){
+                        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                            navigator.serviceWorker.ready
+                            .then(function(sw) {
+                                var outPost=$scope.syncingTimeIn[i];                         
+                                outPost.out='23:00';       
+                                console.log('timeOut',outPost);     
+                                writeData('sync-timeIn', outPost)
+                                    .then(function() {
+                                        console.log('update');
+                                        $scope.syncingTimeIn.push(outPost);
+                                        $scope.isTimeIn=false;
+                                        $scope.refreshEmp();
+                                        //$scope.getData()  ;
+                                        //$scope.$apply();
+                                        return sw.sync.register('sync-new-timeIn');
+                                    })
+                                    .catch(function(err) {
+                                        console.log(err);
+                                    });
+                            });
+                        }
+                    }
+                    else{
+                        $scope.isTimeIn=true;
+                        $scope.TimeHour=$scope.syncingTimeIn[i].in;
+                        break;
+                    }
             }
         }
         for(var i=0;i<$scope.dailyTimeIn.length;i++){
-            if(!('out' in $scope.dailyTimeIn[i])&&$scope.dailyTimeIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()===$scope.dailyTimeIn[i].date_log)    {
+            if(!('out' in $scope.dailyTimeIn[i])&&$scope.dailyTimeIn[i].employee_id===$scope.userId)    {
                 var checker=true;
                 for(var j=0;j<$scope.syncingTimeOut.length;j++){
                     if($scope.syncingTimeOut[j].id==$scope.dailyTimeIn[i].id){
@@ -73,22 +99,56 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
                     }
                 }
                 if(checker){
-                    $scope.TimeHour=$scope.dailyTimeIn[i].in;
-                    $scope.isTimeIn=true;
-                    break;
+                    console.log((newDate.getTime()-new Date($scope.dailyTimeIn[i].date_log+' '+$scope.dailyTimeIn[i].in).getTime())/(1000*60*60),'>=20');
+                    if(((newDate.getTime()-new Date($scope.dailyTimeIn[i].date_log+' '+$scope.dailyTimeIn[i].in).getTime())/(1000*60*60))>=20){
+                        console.log('>=20');
+                        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                            navigator.serviceWorker.ready
+                            .then(function(sw) {                         
+                                $scope.dailyTimeIn[i].out='23:00';
+                                var outPost=$scope.dailyTimeIn[i];
+                                var postTime={
+                                    id: outPost.id,
+                                    employee_id: outPost.employee_id,
+                                    date: outPost.date_log,
+                                    in: outPost.in,
+                                    out: outPost.out 
+                                }
+                                $scope.dailyTimeIn[i]=postTime;
+                                writeData('sync-timeOut', postTime)
+                                    .then(function() {
+                                        $scope.dailyTimeIn.push(postTime);
+                                        $scope.isTimeIn=false;
+                                        $scope.refreshEmp();
+                                        $scope.syncingTimeOut.push(postTime);
+                                        //$scope.getData();
+                                        //$scope.$apply();
+                                        return sw.sync.register('sync-new-timeOut');
+                                    })
+                                    .catch(function(err) {
+                                        console.log(err);
+                                    });
+                                });
+                        }
+                    }
+                    else{
+                        $scope.TimeHour=$scope.dailyTimeIn[i].in;
+                        $scope.isTimeIn=true;
+                        break;
+                    }
                 }
                     
             }
         }
         for(var i=0;i<$scope.syncingBreakIn.length;i++){
-            if(!('out' in $scope.syncingBreakIn[i])&&$scope.syncingBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()==$scope.syncingBreakIn[i].date){
+            if(!('out' in $scope.syncingBreakIn[i])&&$scope.syncingBreakIn[i].employee_id===$scope.userId){
                 $scope.isBreakIn=true;
                 $scope.TimeHour=$scope.syncingBreakIn[i].in;
                 break;
             }
         }
         for(var i=0;i<$scope.dailyBreakIn.length;i++){
-            if(!('out' in $scope.dailyBreakIn[i])&&$scope.dailyBreakIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()===$scope.dailyBreakIn[i].date_log)    {
+            if(!('out' in $scope.dailyBreakIn[i])&&$scope.dailyBreakIn[i].employee_id===$scope.userId)    {
                 var checker=true;
                 for(var j=0;j<$scope.syncingBreakOut.length;j++){
                     if($scope.syncingBreakOut[j].id==$scope.dailyBreakIn[i].id){
@@ -105,7 +165,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
             }
         }
         $scope.refreshEmp();
-        console.log('refresh',$scope.dailyTimeIn,$scope.dailyBreakIn);
+        //console.log('refresh',$scope.dailyTimeIn,$scope.dailyBreakIn);
     }
     $scope.pin='';
     $scope.pinAdd=function(ch){
@@ -297,7 +357,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
                     }
                     else{
                         for(i=0;i<$scope.dailyTimeIn.length;i++){
-                            if(!('out' in $scope.dailyTimeIn[i])&&$scope.dailyTimeIn[i].employee_id===$scope.userId&&(newDate.getMonth()+1)+'-'+newDate.getDate()+'-'+newDate.getFullYear()===$scope.dailyTimeIn[i].date_log)    {
+                            if(!('out' in $scope.dailyTimeIn[i])&&$scope.dailyTimeIn[i].employee_id===$scope.userId)    {
                                 outPost=$scope.dailyTimeIn[i];
                                 console.log('true');
                                 break;
@@ -411,26 +471,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
             })
             .catch(function(err){
                 //console.log(err);
-            });  
-        fetch(url)
-            .then(function(res) {
-                return res.json();
-            })
-            .then(function(data) {
-                networkDataReceived = true;
-                $scope.employees = data;
-                console.log('start');
-                for(var j=0;j<$scope.employees.length;j++){
-                        $scope.verify($scope.employees[j].id);
-                        console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
-                        $scope.$apply();
-                }
-                console.log('olmessage:' + $scope.employees);
-                //$scope.$apply();
-            })
-            .catch(function(err){
-                console.log(err);
-            });        
+            });   
         if ('indexedDB' in window) {
             if (!networkDataReceived2) {     
                 readAllData('time_log')
@@ -466,6 +507,28 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
                     $scope.$apply();
                 }
             });
+        }
+        
+        fetch(url)
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                networkDataReceived = true;
+                $scope.employees = data;
+                console.log('start');
+                for(var j=0;j<$scope.employees.length;j++){
+                        $scope.verify($scope.employees[j].id);
+                        //console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
+                        $scope.$apply();
+                }
+                console.log('olmessage:' + $scope.employees);
+                //$scope.$apply();
+            })
+            .catch(function(err){
+                console.log(err);
+            });       
+        if ('indexedDB' in window) {
             if (!networkDataReceived) {            
                 readAllData('employees')
                     .then(function(data) {
@@ -474,7 +537,7 @@ newApp.controller("appEmployeeController", function($scope,$interval,$timeout,Ms
                             $scope.employees = data; 
                             for(var j=0;j<$scope.employees.length;j++){
                                 $scope.verify($scope.employees[j].id);
-                                console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
+                                //console.log(j,$scope.employees[j].id,$scope.isTimeIn);                        
                                 $scope.$apply();
                             }
                         // }

@@ -22,6 +22,14 @@
     "flexi": {
       "type": "boolean",
       "required": true
+    },
+    "grace_period": {
+      "type": "number",
+      "required": true
+    },
+    "late_extension": {
+      "type": "boolean",
+      "required": true
     }
   },
   "validations": [],
